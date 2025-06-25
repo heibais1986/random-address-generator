@@ -1,0 +1,21 @@
+{
+  "name": "random-address-generator",
+  "version": "1.0.0",
+  "description": "Random Address Generator",
+  "main": "worker.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "preview": "wrangler preview"
+  },
+  "keywords": [
+    "cloudflare-workers",
+    "random-address",
+    "address-generator"
+  ],
+  "author": "ChatTempMail",
+  "license": "MIT",
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+} 
