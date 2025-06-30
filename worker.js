@@ -380,6 +380,7 @@ const htmlContent = `<!DOCTYPE html>
             }
         }
     </script>
+    <script defer src="https://umami.selenium39.me/script.js" data-website-id="ee29c4be-deb2-401f-968e-b15807b92f2d"></script>
 </head>
 <body class="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 text-slate-800 min-h-screen font-['Inter'] relative overflow-x-hidden">
     <!-- Background Decorations -->
