@@ -11,7 +11,7 @@ A random address generator deployed on Cloudflare Workers, supporting 24 countri
 - 📋 One-click copy functionality
 - 🎨 Modern UI design
 
-## Supported Countries
+## Supported Countries/Regions
 
 US, UK, FR, DE, CN, TW, HK, JP, IN, AU, BR, CA, RU, ZA, MX, KR, IT, ES, TR, SA, AR, EG, NG, ID
 
