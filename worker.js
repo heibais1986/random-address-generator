@@ -537,7 +537,7 @@ const htmlContent = `<!DOCTYPE html>
                     </div>
                     <div class="space-y-5 flex-1 overflow-hidden">
                         <div class="group bg-gradient-to-r from-slate-50 to-blue-50/50 p-5 rounded-2xl cursor-pointer hover:from-primary-50 hover:to-primary-100/50 transition-all duration-300 transform hover:scale-[1.02] hover:shadow-xl border border-slate-200/50" 
-                             onclick="copyToClipboard(this.querySelector('span').textContent)">
+                             onclick="copyToClipboard(document.getElementById('name').textContent)">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-4">
                                     <div class="p-2 bg-primary-100 rounded-xl group-hover:bg-primary-200 transition-colors">
@@ -556,7 +556,7 @@ const htmlContent = `<!DOCTYPE html>
                             </div>
                         </div>
                         <div class="group bg-gradient-to-r from-slate-50 to-blue-50/50 p-5 rounded-2xl cursor-pointer hover:from-primary-50 hover:to-primary-100/50 transition-all duration-300 transform hover:scale-[1.02] hover:shadow-xl border border-slate-200/50" 
-                             onclick="copyToClipboard(this.querySelector('span').textContent)">
+                             onclick="copyToClipboard(document.getElementById('gender').textContent)">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-4">
                                     <div class="p-2 bg-accent-100 rounded-xl group-hover:bg-accent-200 transition-colors">
@@ -575,7 +575,7 @@ const htmlContent = `<!DOCTYPE html>
                             </div>
                         </div>
                         <div class="group bg-gradient-to-r from-slate-50 to-blue-50/50 p-5 rounded-2xl cursor-pointer hover:from-primary-50 hover:to-primary-100/50 transition-all duration-300 transform hover:scale-[1.02] hover:shadow-xl border border-slate-200/50" 
-                             onclick="copyToClipboard(this.querySelector('span').textContent)">
+                             onclick="copyToClipboard(document.getElementById('phone').textContent)">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-4">
                                     <div class="p-2 bg-emerald-100 rounded-xl group-hover:bg-emerald-200 transition-colors">
@@ -594,7 +594,7 @@ const htmlContent = `<!DOCTYPE html>
                             </div>
                         </div>
                         <div class="group bg-gradient-to-r from-slate-50 to-blue-50/50 p-5 rounded-2xl cursor-pointer hover:from-primary-50 hover:to-primary-100/50 transition-all duration-300 transform hover:scale-[1.02] hover:shadow-xl border border-slate-200/50" 
-                             onclick="copyToClipboard(this.querySelector('span').textContent)">
+                             onclick="copyToClipboard(document.getElementById('address').textContent)">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-4">
                                     <div class="p-2 bg-orange-100 rounded-xl group-hover:bg-orange-200 transition-colors">
@@ -851,20 +851,79 @@ const htmlContent = `<!DOCTYPE html>
 
         // Copy to clipboard
         function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                const copied = document.getElementById('copied');
-                copied.classList.remove('hidden');
-                copied.classList.add('translate-y-0');
-                copied.classList.remove('translate-y-[-100%]');
-                
+            if (!text || text.trim() === '' || text === 'Loading...') {
+                showMessage('No content to copy', 'error');
+                return;
+            }
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showMessage('Copied to clipboard!', 'success');
+                }).catch(err => {
+                    console.error('Failed to copy: ', err);
+                    fallbackCopyTextToClipboard(text);
+                });
+            } else {
+                fallbackCopyTextToClipboard(text);
+            }
+        }
+
+        // Fallback copy method for older browsers
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.top = "0";
+            textArea.style.left = "0";
+            textArea.style.position = "fixed";
+            textArea.style.opacity = "0";
+            
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showMessage('Copied to clipboard!', 'success');
+                } else {
+                    showMessage('Failed to copy', 'error');
+                }
+            } catch (err) {
+                console.error('Fallback: Could not copy text: ', err);
+                showMessage('Copy not supported', 'error');
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        // Show message function
+        function showMessage(message, type = 'success') {
+            const messageDiv = document.getElementById('copied');
+            const messageText = messageDiv.querySelector('span');
+            
+            // Update message text
+            messageText.textContent = message;
+            
+            // Update colors based on type
+            if (type === 'error') {
+                messageDiv.className = 'fixed top-6 right-6 bg-gradient-to-r from-red-500 to-red-600 text-white px-8 py-4 rounded-2xl shadow-2xl z-50 transform transition-all duration-500 border border-white/20';
+            } else {
+                messageDiv.className = 'fixed top-6 right-6 bg-gradient-to-r from-emerald-500 to-green-500 text-white px-8 py-4 rounded-2xl shadow-2xl z-50 transform transition-all duration-500 border border-white/20';
+            }
+            
+            // Show message
+            messageDiv.classList.remove('hidden');
+            messageDiv.classList.add('translate-y-0');
+            messageDiv.classList.remove('translate-y-[-100%]');
+            
+            // Hide message after delay
+            setTimeout(() => {
+                messageDiv.classList.add('translate-y-[-100%]');
+                messageDiv.classList.remove('translate-y-0');
                 setTimeout(() => {
-                    copied.classList.add('translate-y-[-100%]');
-                    copied.classList.remove('translate-y-0');
-                    setTimeout(() => {
-                        copied.classList.add('hidden');
-                    }, 300);
-                }, 2000);
-            });
+                    messageDiv.classList.add('hidden');
+                }, 300);
+            }, 2000);
         }
 
         // Show/hide loading animation
